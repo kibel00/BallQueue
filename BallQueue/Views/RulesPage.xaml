@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="BallQueue.Views.RulesPage"
+             Title="Reglas">
+    <ScrollView Padding="16">
+        <VerticalStackLayout Spacing="16">
+            <Label Text="Reglas de la cola" FontSize="24" FontAttributes="Bold" />
+            <Label Text="Estas reglas determinan quién juega, quién espera y cómo se rota cada equipo."
+                   FontSize="14" Opacity="0.75" />
+
+            <Frame BorderColor="#5C6BC0" Padding="14" CornerRadius="10">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="1. Prioridad de la cola" FontSize="16" FontAttributes="Bold" />
+                    <Label Text="Primero tienen prioridad los jugadores que pagaron RD$100. Entre jugadores que tienen el mismo estado de pago, entra primero quien llegó antes." />
+                </VerticalStackLayout>
+            </Frame>
+
+            <Frame BorderColor="#2196F3" Padding="14" CornerRadius="10">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="2. Inicio del juego" FontSize="16" FontAttributes="Bold" />
+                    <Label Text="Se necesitan 10 jugadores para jugar: dos equipos de 5. Si hay jugadores adicionales, los dos últimos en llegar que no estén jugando son el árbitro y el anotador; los demás quedan esperando." />
+                </VerticalStackLayout>
+            </Frame>
+
+            <Frame BorderColor="#4CAF50" Padding="14" CornerRadius="10">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="3. Equipo ganador" FontSize="16" FontAttributes="Bold" />
+                    <Label Text="El equipo que gana permanece unido para el siguiente juego, conservando su lado: Equipo A o Equipo B." />
+                </VerticalStackLayout>
+            </Frame>
+
+            <Frame BorderColor="#F44336" Padding="14" CornerRadius="10">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="4. Rotación del equipo perdedor" FontSize="16" FontAttributes="Bold" />
+                    <Label Text="Los jugadores que estaban fuera del juego (árbitro, anotador y fila de espera) entran al equipo perdedor. Si entran 3 personas, permanecen los 2 jugadores perdedores con mayor prioridad y entran las 3 personas de afuera. Los perdedores restantes pasan a árbitro, anotador o espera." />
+                </VerticalStackLayout>
+            </Frame>
+
+            <Frame BorderColor="#FF9800" Padding="14" CornerRadius="10">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="5. Jugadores nuevos" FontSize="16" FontAttributes="Bold" />
+                    <Label Text="Un jugador que llega después de que un juego empezó no entra a ese juego. Se agrega al final de la fila según su hora de llegada y puede ser seleccionado para el siguiente juego." />
+                </VerticalStackLayout>
+            </Frame>
+
+            <Frame BorderColor="#9C27B0" Padding="14" CornerRadius="10">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="6. Descanso por dos victorias" FontSize="16" FontAttributes="Bold" />
+                    <Label Text="Si el mismo equipo gana 2 juegos seguidos y hay al menos 10 jugadores fuera de ese equipo, el equipo ganador descansa el siguiente juego. Después del descanso puede volver a la fila normal." />
+                </VerticalStackLayout>
+            </Frame>
+
+            <Frame BorderColor="#607D8B" Padding="14" CornerRadius="10">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="7. Salida de un jugador" FontSize="16" FontAttributes="Bold" />
+                    <Label Text="Si un jugador debe salir durante un juego, toca “Salir” junto a su nombre y confirma. El árbitro entra primero para sustituirlo. Si no hay árbitro, entra el jugador que espera con mayor prioridad: primero pagado, después el que llegó antes." />
+                </VerticalStackLayout>
+            </Frame>
+
+            <Button Text="Volver al juego"
+                    Clicked="OnBack"
+                    BackgroundColor="#9E9E9E"
+                    TextColor="White" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

@@ -1,0 +1,126 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="BallQueue.MainPage"
+             Title="Cola de Baloncesto">
+
+    <Grid RowDefinitions="Auto,*" Padding="10">
+
+        <!-- Header -->
+        <VerticalStackLayout Grid.Row="0" Spacing="10" Padding="0,0,0,10">
+            <!--<Label Text="Cola de Baloncesto" 
+                   FontSize="24" 
+                   FontAttributes="Bold" />-->
+            <Label Text="Rotación de jugadores" 
+                   FontSize="14" 
+                   Opacity="0.7" />
+        </VerticalStackLayout>
+
+        <!-- Main Content -->
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Spacing="20" Padding="10">
+
+                <!-- Session Management -->
+                <Frame BorderColor="#e0e0e0" Padding="15" CornerRadius="10">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="Administración de sesión" FontSize="16" FontAttributes="Bold" />
+
+                        <Entry x:Name="SessionNameEntry"
+                               Placeholder="Nombre de la sesión (ej.: Viernes por la mañana)"
+                               PlaceholderColor="#999999" />
+
+                        <Button Text="Crear nueva sesión"
+                                Clicked="OnCreateSession"
+                                BackgroundColor="#2196F3"
+                                TextColor="White" />
+
+                        <Label Text="Sesión activa: (ninguna)"
+                               x:Name="ActiveSessionLabel"
+                               FontSize="12"
+                               Opacity="0.8" />
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- Quick Stats -->
+                <Frame BorderColor="#e0e0e0" Padding="15" CornerRadius="10">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="Resumen de la sesión" FontSize="16" FontAttributes="Bold" />
+
+                        <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="10" RowSpacing="10">
+                            <Frame Grid.Row="0" Grid.Column="0" Padding="10" CornerRadius="8" BorderColor="#4CAF50">
+                                <VerticalStackLayout Spacing="5">
+                                    <Label Text="Jugadores" FontSize="12" Opacity="0.7" />
+                                    <Label Text="0" x:Name="PlayersCountLabel" FontSize="20" FontAttributes="Bold" />
+                                </VerticalStackLayout>
+                            </Frame>
+
+                            <Frame Grid.Row="0" Grid.Column="1" Padding="10" CornerRadius="8" BorderColor="#FF9800">
+                                <VerticalStackLayout Spacing="5">
+                                    <Label Text="Juegos" FontSize="12" Opacity="0.7" />
+                                    <Label Text="0" x:Name="GamesCountLabel" FontSize="20" FontAttributes="Bold" />
+                                </VerticalStackLayout>
+                            </Frame>
+
+                            <Frame Grid.Row="1" Grid.Column="0" Padding="10" CornerRadius="8" BorderColor="#F44336">
+                                <VerticalStackLayout Spacing="5">
+                                    <Label Text="En espera" FontSize="12" Opacity="0.7" />
+                                    <Label Text="0" x:Name="WaitingCountLabel" FontSize="20" FontAttributes="Bold" />
+                                </VerticalStackLayout>
+                            </Frame>
+
+                            <Frame Grid.Row="1" Grid.Column="1" Padding="10" CornerRadius="8" BorderColor="#9C27B0">
+                                <VerticalStackLayout Spacing="5">
+                                    <Label Text="Pagaron" FontSize="12" Opacity="0.7" />
+                                    <Label Text="0" x:Name="PaidCountLabel" FontSize="20" FontAttributes="Bold" />
+                                </VerticalStackLayout>
+                            </Frame>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- Navigation Buttons -->
+                <Frame BorderColor="#e0e0e0" Padding="15" CornerRadius="10">
+                    <VerticalStackLayout Spacing="10">
+                        <Button Text="Administrar jugadores y pagos"
+                                Clicked="OnManagePlayers"
+                                BackgroundColor="#FF9800"
+                                TextColor="White" />
+
+                        <Button Text="Ver juego actual"
+                                Clicked="OnViewGame"
+                                BackgroundColor="#2196F3"
+                                TextColor="White" />
+
+                        <Button Text="Ver historial"
+                                Clicked="OnViewHistory"
+                                BackgroundColor="#9C27B0"
+                                TextColor="White" />
+                    </VerticalStackLayout>
+                </Frame>
+
+                <Frame BorderColor="#e0e0e0" Padding="15" CornerRadius="10">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="Opciones de sesión" FontSize="16" FontAttributes="Bold" />
+                        <Button Text="Limpiar sesión actual"
+                                Clicked="OnClearSession"
+                                BackgroundColor="#FF9800"
+                                TextColor="White" />
+                        <Button Text="Eliminar sesión actual"
+                                Clicked="OnDeleteSession"
+                                BackgroundColor="#D32F2F"
+                                TextColor="White" />
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- Status Messages -->
+                <Label x:Name="StatusLabel"
+                       Text="Listo. Crea o selecciona una sesión para comenzar."
+                       FontSize="12"
+                       TextColor="#757575"
+                       LineBreakMode="WordWrap" />
+
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+
+</ContentPage>

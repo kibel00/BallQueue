@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="BallQueue.Views.GamePage"
+             Title="Juego actual">
+
+    <ScrollView Padding="10">
+        <VerticalStackLayout Spacing="15">
+
+            <!-- Game Header -->
+            <Frame BorderColor="#2196F3" Padding="15" CornerRadius="10">
+                <VerticalStackLayout Spacing="10" HorizontalOptions="Center">
+                    <Label Text="NÚMERO DE JUEGO" FontSize="12" Opacity="0.7" HorizontalOptions="Center" />
+                    <Label x:Name="GameNumberLabel" Text="1" FontSize="36" FontAttributes="Bold" HorizontalOptions="Center" />
+                    <Label x:Name="StatusLabel" FontSize="12" HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+            </Frame>
+
+            <Button Text="Reglas"
+                    Clicked="OnSpanishRules"
+                    BackgroundColor="#5C6BC0"
+                    TextColor="White" />
+
+            <!-- Teams Section -->
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+
+                <!-- Team A -->
+                <Frame Grid.Column="0" BorderColor="#4CAF50" Padding="10" CornerRadius="10">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="EQUIPO A" FontSize="14" FontAttributes="Bold" Margin="0,0,0,5" />
+                        <VerticalStackLayout x:Name="TeamAList" Spacing="4" />
+                        <Button x:Name="TeamAWinButton"
+                                Text="Ganó Equipo A"
+                                Clicked="OnTeamAWon"
+                                BackgroundColor="#4CAF50"
+                                TextColor="White"
+                                FontSize="12"
+                                Padding="10,5"
+                                Margin="0,5,0,0" />
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- Team B -->
+                <Frame Grid.Column="1" BorderColor="#F44336" Padding="10" CornerRadius="10">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="EQUIPO B" FontSize="14" FontAttributes="Bold" Margin="0,0,0,5" />
+                        <VerticalStackLayout x:Name="TeamBList" Spacing="4" />
+                        <Button x:Name="TeamBWinButton"
+                                Text="Ganó Equipo B"
+                                Clicked="OnTeamBWon"
+                                BackgroundColor="#F44336"
+                                TextColor="White"
+                                FontSize="12"
+                                Padding="10,5"
+                                Margin="0,5,0,0" />
+                    </VerticalStackLayout>
+                </Frame>
+            </Grid>
+
+            <!-- Officials -->
+            <Frame BorderColor="#9C27B0" Padding="15" CornerRadius="10">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Oficiales" FontSize="14" FontAttributes="Bold" />
+
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                        <VerticalStackLayout Grid.Column="0" Spacing="5">
+                            <Label Text="Árbitro" FontSize="11" Opacity="0.7" />
+                            <Label x:Name="RefereeLabel" Text="(Sin asignar)" FontSize="12" />
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Grid.Column="1" Spacing="5">
+                            <Label Text="Anotador" FontSize="11" Opacity="0.7" />
+                            <Label x:Name="ScorerLabel" Text="(Sin asignar)" FontSize="12" />
+                        </VerticalStackLayout>
+                    </Grid>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Waiting Queue -->
+            <Frame BorderColor="#FF9800" Padding="15" CornerRadius="10">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Fila de espera" FontSize="14" FontAttributes="Bold" />
+                    <VerticalStackLayout x:Name="WaitingList" Spacing="4" />
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Action Buttons -->
+            <VerticalStackLayout Spacing="10">
+                <Button Text="Actualizar"
+                        Clicked="OnRefresh"
+                        BackgroundColor="#2196F3"
+                        TextColor="White" />
+                <Button Text="Volver al menú"
+                        Clicked="OnBack"
+                        BackgroundColor="#9E9E9E"
+                        TextColor="White" />
+            </VerticalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
