@@ -54,7 +54,7 @@
             <Frame BorderColor="#607D8B" Padding="14" CornerRadius="10">
                 <VerticalStackLayout Spacing="10">
                     <Label Text="7. Salida de un jugador" FontSize="16" FontAttributes="Bold" />
-                    <Label Text="Si un jugador debe salir durante un juego, toca “Salir” junto a su nombre y confirma. El árbitro entra primero para sustituirlo. Si no hay árbitro, entra el jugador que espera con mayor prioridad: primero pagado, después el que llegó antes." />
+                    <Label Text="Si un jugador debe salir durante un juego, toca “Salir” junto a su nombre y confirma. El árbitro entra primero para sustituirlo y el anotador pasa a ser árbitro. El nuevo anotador será el jugador pagado que llegó primero; si nadie en la fila ha pagado, será el jugador que llegó primero. Si no hay nadie esperando, el puesto de anotador queda vacío." />
                 </VerticalStackLayout>
             </Frame>
 

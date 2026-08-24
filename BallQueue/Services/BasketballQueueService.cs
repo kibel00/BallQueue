@@ -291,16 +291,50 @@ public class BasketballQueueService
 
         var leavingPlayer = allPlayers.FirstOrDefault(player => player.Id == leavingPlayerId)
             ?? throw new InvalidOperationException("The selected player could not be found.");
-        // The current referee is the first replacement choice. If there is no
-        // referee, use the normal paid-then-arrival waiting queue.
+        // The current referee is the first replacement choice. When the referee
+        // enters a team, the scorer advances to referee and the best waiting
+        // player becomes scorer. If nobody is waiting, scorer stays unassigned.
         var replacement = game.RefereeId is Guid refereeId
             ? allPlayers.FirstOrDefault(player =>
                 player.Id == refereeId && player.CurrentStatus == PlayerStatus.Referee)
             : null;
         if (replacement is not null)
         {
-            game.RefereeId = null;
-            game.Referee = null;
+            var currentScorer = game.ScorerId is Guid scorerId
+                ? allPlayers.FirstOrDefault(player =>
+                    player.Id == scorerId && player.CurrentStatus == PlayerStatus.Scorer)
+                : null;
+
+            if (currentScorer is null)
+            {
+                game.RefereeId = null;
+                game.Referee = null;
+            }
+            else
+            {
+                game.RefereeId = currentScorer.Id;
+                game.Referee = currentScorer;
+                currentScorer.CurrentStatus = PlayerStatus.Referee;
+
+                // A replacement scorer is the earliest-arriving paid player.
+                // When nobody waiting has paid, use the earliest arrival instead.
+                var newScorer = allPlayers
+                    .Where(player => player.CurrentStatus is PlayerStatus.Waiting or PlayerStatus.LostWaiting)
+                    .OrderByDescending(player => player.HasPaid)
+                    .ThenBy(player => player.ArrivalNumber)
+                    .FirstOrDefault();
+                if (newScorer is null)
+                {
+                    game.ScorerId = null;
+                    game.Scorer = null;
+                }
+                else
+                {
+                    game.ScorerId = newScorer.Id;
+                    game.Scorer = newScorer;
+                    newScorer.CurrentStatus = PlayerStatus.Scorer;
+                }
+            }
         }
 
         replacement ??= BuildEffectiveQueue(allPlayers).FirstOrDefault();

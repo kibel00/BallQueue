@@ -91,6 +91,9 @@ public partial class MainPage : ContentPage
         await Navigation.PushAsync(CreateHistoryPage(viewModel.Sessions));
     }
 
+    private async void OnViewRules(object sender, EventArgs e) =>
+        await Navigation.PushAsync(new Views.RulesPage());
+
     private async void OnClearSession(object sender, EventArgs e)
     {
         if (!HasActiveSession())

@@ -95,6 +95,11 @@
                                 Clicked="OnViewHistory"
                                 BackgroundColor="#9C27B0"
                                 TextColor="White" />
+
+                        <Button Text="Ver reglas"
+                                Clicked="OnViewRules"
+                                BackgroundColor="#5C6BC0"
+                                TextColor="White" />
                     </VerticalStackLayout>
                 </Frame>
 
