@@ -31,6 +31,30 @@ public partial class GamePage : ContentPage
     private async void OnRefresh(object sender, EventArgs e) =>
         await LoadGameAsync();
 
+    private async void OnSwapPlayers(object sender, EventArgs e)
+    {
+        if (TeamAPlayerPicker.SelectedItem is not Player teamAPlayer ||
+            TeamBPlayerPicker.SelectedItem is not Player teamBPlayer)
+        {
+            await DisplayAlertAsync(
+                "Selecciona jugadores",
+                "Selecciona un jugador de cada equipo para hacer el cambio.",
+                "OK");
+            return;
+        }
+
+        var confirmed = await DisplayAlertAsync(
+            "Intercambiar jugadores",
+            $"¿Intercambiar a {teamAPlayer.Name} y {teamBPlayer.Name}?",
+            "Intercambiar",
+            "Cancelar");
+        if (!confirmed)
+            return;
+
+        await _viewModel.SwapPlayersBetweenTeamsAsync(teamAPlayer.Id, teamBPlayer.Id);
+        UpdateDisplay();
+    }
+
     private async void OnSpanishRules(object sender, EventArgs e) =>
         await Navigation.PushAsync(new RulesPage());
 
@@ -60,10 +84,15 @@ public partial class GamePage : ContentPage
         PopulateTeamPlayerList(TeamAList, hasGame ? _viewModel.TeamAPlayers : Array.Empty<Player>());
         PopulateTeamPlayerList(TeamBList, hasGame ? _viewModel.TeamBPlayers : Array.Empty<Player>());
         PopulatePlayerList(WaitingList, hasGame ? _viewModel.WaitingPlayers : Array.Empty<Player>(), includeArrivalNumber: true);
+        TeamAPlayerPicker.ItemsSource = hasGame ? _viewModel.TeamAPlayers : Array.Empty<Player>();
+        TeamBPlayerPicker.ItemsSource = hasGame ? _viewModel.TeamBPlayers : Array.Empty<Player>();
+        TeamAPlayerPicker.SelectedItem = null;
+        TeamBPlayerPicker.SelectedItem = null;
         RefereeLabel.Text = _viewModel.Referee?.Name ?? "(Sin asignar)";
         ScorerLabel.Text = _viewModel.Scorer?.Name ?? "(Sin asignar)";
         TeamAWinButton.IsEnabled = hasGame;
         TeamBWinButton.IsEnabled = hasGame;
+        SwapPlayersButton.IsEnabled = hasGame && _viewModel.TeamAPlayers.Count > 0 && _viewModel.TeamBPlayers.Count > 0;
         StatusLabel.Text = _viewModel.StatusMessage;
         StatusLabel.TextColor = hasGame ? Colors.DarkGreen : Colors.IndianRed;
     }

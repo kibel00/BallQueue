@@ -57,6 +57,37 @@
                 </Frame>
             </Grid>
 
+            <!-- Team adjustments -->
+            <Frame BorderColor="#5C6BC0" Padding="15" CornerRadius="10">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Cambiar jugadores entre equipos"
+                           FontSize="14"
+                           FontAttributes="Bold" />
+                    <Label Text="Selecciona un jugador de cada equipo para intercambiarlos."
+                           FontSize="11"
+                           Opacity="0.7" />
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                        <VerticalStackLayout Grid.Column="0" Spacing="4">
+                            <Label Text="Equipo A" FontSize="11" />
+                            <Picker x:Name="TeamAPlayerPicker"
+                                    Title="Jugador del equipo A"
+                                    ItemDisplayBinding="{Binding Name}" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="1" Spacing="4">
+                            <Label Text="Equipo B" FontSize="11" />
+                            <Picker x:Name="TeamBPlayerPicker"
+                                    Title="Jugador del equipo B"
+                                    ItemDisplayBinding="{Binding Name}" />
+                        </VerticalStackLayout>
+                    </Grid>
+                    <Button x:Name="SwapPlayersButton"
+                            Text="Intercambiar jugadores"
+                            Clicked="OnSwapPlayers"
+                            BackgroundColor="#5C6BC0"
+                            TextColor="White" />
+                </VerticalStackLayout>
+            </Frame>
+
             <!-- Officials -->
             <Frame BorderColor="#9C27B0" Padding="15" CornerRadius="10">
                 <VerticalStackLayout Spacing="10">

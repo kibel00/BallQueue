@@ -257,6 +257,52 @@ public class GameViewModel : INotifyPropertyChanged
         }
     }
 
+    /// <summary>
+    /// Exchanges one player from each active team without changing either
+    /// player's game status, officials, or queue position.
+    /// </summary>
+    public async Task SwapPlayersBetweenTeamsAsync(Guid teamAPlayerId, Guid teamBPlayerId)
+    {
+        if (_currentGame?.TeamA is null || _currentGame.TeamB is null)
+        {
+            StatusMessage = "No hay un juego activo para modificar.";
+            return;
+        }
+
+        if (_currentGame.Status == GameStatus.Finished)
+        {
+            StatusMessage = "No se pueden cambiar jugadores en un juego terminado.";
+            return;
+        }
+
+        var teamAIds = _currentGame.TeamA.GetPlayerIds();
+        var teamBIds = _currentGame.TeamB.GetPlayerIds();
+        var teamAIndex = teamAIds.IndexOf(teamAPlayerId);
+        var teamBIndex = teamBIds.IndexOf(teamBPlayerId);
+
+        if (teamAIndex < 0 || teamBIndex < 0)
+        {
+            StatusMessage = "Los jugadores seleccionados ya no pertenecen a esos equipos.";
+            return;
+        }
+
+        teamAIds[teamAIndex] = teamBPlayerId;
+        teamBIds[teamBIndex] = teamAPlayerId;
+        _currentGame.TeamA.SetPlayerIds(teamAIds);
+        _currentGame.TeamB.SetPlayerIds(teamBIds);
+
+        try
+        {
+            await _repository.SaveGameAsync(_currentGame);
+            await RefreshGameDisplayAsync();
+            StatusMessage = "Los jugadores fueron intercambiados entre los equipos.";
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = $"No se pudieron intercambiar los jugadores: {ex.Message}";
+        }
+    }
+
     // ========== HELPER ==========
 
     protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
