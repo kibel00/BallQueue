@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
 using BallQueue.Enums;
 using BallQueue.Models;
 using BallQueue.Services;
@@ -211,12 +212,25 @@ public class GameViewModel : INotifyPropertyChanged
             await _repository.SaveGameAsync(_currentGame);
             await _repository.SavePlayersAsync(allPlayers);
 
+            // After a team rests for one game, the winner of that intervening game
+            // plays the rested team. Otherwise use the normal rotation.
+            var nextGameNumber = _currentGame.Number + 1;
+            var restingTeamIds = GetRestingTeamPlayerIds(_currentSession);
+            if (restingTeamIds.Count > 0)
+            {
+                _currentGame = _queueService.CreateGameAgainstRestingTeam(
+                    allPlayers, nextGameNumber, _currentGame, restingTeamIds);
+                _currentSession.RestingTeamPlayerIdsJson = "[]";
+            }
+            else
+            {
+                _currentGame = _queueService.CreateNextGame(
+                    allPlayers, nextGameNumber, _currentGame, out var newRestingTeamIds);
+                _currentSession.RestingTeamPlayerIdsJson = JsonSerializer.Serialize(newRestingTeamIds ?? []);
+            }
+
             _currentSession.TotalGamesPlayed++;
             await _repository.SaveSessionAsync(_currentSession);
-
-            // Create next game
-            var nextGameNumber = _currentGame.Number + 1;
-            _currentGame = _queueService.CreateNextGame(allPlayers, nextGameNumber, _currentGame);
             _currentGame.SessionId = _currentSession.Id;
             await _repository.SaveGameAsync(_currentGame);
             await _repository.SavePlayersAsync(allPlayers);
@@ -308,5 +322,17 @@ public class GameViewModel : INotifyPropertyChanged
     protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    private static List<Guid> GetRestingTeamPlayerIds(Session session)
+    {
+        try
+        {
+            return JsonSerializer.Deserialize<List<Guid>>(session.RestingTeamPlayerIdsJson) ?? [];
+        }
+        catch (JsonException)
+        {
+            return [];
+        }
     }
 }

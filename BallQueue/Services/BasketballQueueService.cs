@@ -75,8 +75,13 @@ public class BasketballQueueService
     /// while the next opponent keeps only as many losing players as are needed after
     /// players who were outside the game have been rotated in.
     /// </summary>
-    public Game CreateNextGame(IEnumerable<Player> players, int currentGameNumber, Game previousGame)
+    public Game CreateNextGame(
+        IEnumerable<Player> players,
+        int currentGameNumber,
+        Game previousGame,
+        out List<Guid>? restingTeamPlayerIds)
     {
+        restingTeamPlayerIds = null;
         if (previousGame.Status != GameStatus.Finished || previousGame.Winner is null)
             return CreateNextGame(players, currentGameNumber);
 
@@ -104,6 +109,7 @@ public class BasketballQueueService
         // people are available.  Resetting its streak records the required break.
         if (ShouldGiveWinningTeamABreak(winners, outsidePlayers.Count))
         {
+            restingTeamPlayerIds = winners.Select(player => player.Id).ToList();
             foreach (var winner in winners)
             {
                 winner.ConsecutiveGames = 0;
@@ -135,6 +141,41 @@ public class BasketballQueueService
         return previousGame.Winner == TeamSide.A
             ? CreateGame(currentGameNumber, winners, rotatingOpponent, reservePlayers)
             : CreateGame(currentGameNumber, rotatingOpponent, winners, reservePlayers);
+    }
+
+    /// <summary>
+    /// Creates the game immediately after a two-win rest. The team that won the
+    /// intervening game plays the team that completed its one-game rest.
+    /// </summary>
+    public Game CreateGameAgainstRestingTeam(
+        IEnumerable<Player> players,
+        int currentGameNumber,
+        Game completedInterveningGame,
+        IEnumerable<Guid> restingTeamPlayerIds)
+    {
+        var allPlayers = players.ToList();
+        var restingIds = restingTeamPlayerIds.ToHashSet();
+        var restingPlayers = allPlayers
+            .Where(player => restingIds.Contains(player.Id) && player.CurrentStatus != PlayerStatus.Finished)
+            .ToList();
+        var interveningWinners = completedInterveningGame.GetWinningTeam() is { } winningTeam
+            ? PlayersInTeam(allPlayers, winningTeam)
+            : [];
+
+        if (restingPlayers.Count != _settings.PlayersPerTeam ||
+            interveningWinners.Count != _settings.PlayersPerTeam)
+        {
+            throw new InvalidOperationException("No se puede crear el juego de regreso: falta un equipo completo.");
+        }
+
+        var playingIds = restingIds.Union(interveningWinners.Select(player => player.Id)).ToHashSet();
+        var reserves = allPlayers
+            .Where(player =>
+                !playingIds.Contains(player.Id) &&
+                player.CurrentStatus is PlayerStatus.Waiting or PlayerStatus.LostWaiting)
+            .ToList();
+
+        return CreateGame(currentGameNumber, restingPlayers, interveningWinners, reserves);
     }
 
     private Game CreateGame(

@@ -33,6 +33,12 @@ public class Session
     /// </summary>
     public int TotalGamesPlayed { get; set; } = 0;
 
+    /// <summary>
+    /// IDs of the team serving its one-game rest after two consecutive wins.
+    /// The value is persisted so the resting team can return after the next game.
+    /// </summary>
+    public string RestingTeamPlayerIdsJson { get; set; } = "[]";
+
     // ========== NAVIGATION PROPERTIES ==========
 
     /// <summary>

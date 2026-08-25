@@ -55,6 +55,7 @@ public class BasketballDbContext : DbContext
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.Name).HasMaxLength(255);
+            entity.Property(e => e.RestingTeamPlayerIdsJson).HasMaxLength(2000);
             entity.HasMany(e => e.Players)
                 .WithOne(p => p.Session)
                 .HasForeignKey(p => p.SessionId)
@@ -217,6 +218,17 @@ public class BasketballDbContext : DbContext
         }
     }
 
+    /// <summary>
+    /// Adds the persisted resting-team field to databases created by older app versions.
+    /// </summary>
+    public void EnsureRestingTeamColumn()
+    {
+        if (HasColumn("Sessions", "RestingTeamPlayerIdsJson"))
+            return;
+
+        Database.ExecuteSqlRaw("ALTER TABLE \"Sessions\" ADD COLUMN \"RestingTeamPlayerIdsJson\" TEXT NOT NULL DEFAULT '[]';");
+    }
+
     private bool HasForeignKey(string tableName, string targetTable)
     {
         var connection = Database.GetDbConnection();
@@ -234,6 +246,33 @@ public class BasketballDbContext : DbContext
             while (reader.Read())
             {
                 if (string.Equals(reader[2]?.ToString(), targetTable, StringComparison.OrdinalIgnoreCase))
+                    return true;
+            }
+
+            return false;
+        }
+        finally
+        {
+            if (shouldClose)
+                connection.Close();
+        }
+    }
+
+    private bool HasColumn(string tableName, string columnName)
+    {
+        var connection = Database.GetDbConnection();
+        var shouldClose = connection.State != System.Data.ConnectionState.Open;
+        if (shouldClose)
+            connection.Open();
+
+        try
+        {
+            using var command = connection.CreateCommand();
+            command.CommandText = $"PRAGMA table_info('{tableName}');";
+            using var reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                if (string.Equals(reader[1]?.ToString(), columnName, StringComparison.OrdinalIgnoreCase))
                     return true;
             }
 

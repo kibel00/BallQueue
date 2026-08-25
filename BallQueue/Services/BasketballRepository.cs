@@ -296,6 +296,7 @@ public class BasketballRepository
         await RemoveSessionContentAsync(sessionId);
         session.TotalGamesPlayed = 0;
         session.EndDateTime = null;
+        session.RestingTeamPlayerIdsJson = "[]";
         await _dbContext.SaveChangesAsync();
         return session;
     }

@@ -39,6 +39,7 @@ public static class MauiProgram
         var dbContext = scope.ServiceProvider.GetRequiredService<BasketballDbContext>();
         dbContext.Database.EnsureCreated();
         dbContext.RemoveLegacyCircularTeamForeignKeys();
+        dbContext.EnsureRestingTeamColumn();
 
         return app;
     }
